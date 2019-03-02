@@ -1,0 +1,128 @@
+INFO:kafka.client:Bootstrapping cluster metadata from [('10.130.138.164', 9092, <AddressFamily.AF_INET: 2>)]
+INFO:kafka.conn:<BrokerConnection node_id=bootstrap host=10.130.138.164/10.130.138.164 port=9092>: connecting to 10.130.138.164:9092
+INFO:kafka.client:Bootstrap succeeded: found 3 brokers and 27 topics.
+INFO:kafka.conn:<BrokerConnection node_id=bootstrap host=10.130.138.164/10.130.138.164 port=9092>: Closing connection. 
+INFO:kafka.conn:<BrokerConnection node_id=0 host=10.130.138.164/10.130.138.164 port=9092>: connecting to 10.130.138.164:9092
+INFO:kafka.conn:Broker version identifed as 1.0.0
+INFO:kafka.conn:Set configuration api_version=(1, 0, 0) to skip auto check_version requests on startup
+INFO:kafka.consumer.subscription_state:Updating subscribed topics to: ('test',)
+INFO:kafka.conn:<BrokerConnection node_id=2 host=10.130.138.164/10.130.138.164 port=9094>: connecting to 10.130.138.164:9094
+INFO:kafka.cluster:Group coordinator for test is BrokerMetadata(nodeId=0, host='10.130.138.164', port=9092, rack=None)
+INFO:kafka.coordinator:Discovered coordinator 0 for group test
+INFO:kafka.coordinator:Starting new heartbeat thread
+INFO:kafka.coordinator.consumer:Revoking previously assigned partitions set() for group test
+INFO:kafka.coordinator:(Re-)joining group test
+INFO:kafka.coordinator:Elected group leader -- performing partition assignments using range
+INFO:kafka.coordinator:Successfully joined group test with generation 5
+INFO:kafka.consumer.subscription_state:Updated partition assignment: [TopicPartition(topic='test', partition=0)]
+INFO:kafka.coordinator.consumer:Setting newly assigned partitions {TopicPartition(topic='test', partition=0)} for group test
+INFO:kafka.coordinator.consumer:Revoking previously assigned partitions {TopicPartition(topic='test', partition=0)} for group test
+INFO:kafka.coordinator:(Re-)joining group test
+INFO:kafka.coordinator:Elected group leader -- performing partition assignments using range
+INFO:kafka.coordinator:Successfully joined group test with generation 6
+INFO:kafka.consumer.subscription_state:Updated partition assignment: [TopicPartition(topic='test', partition=0)]
+INFO:kafka.coordinator.consumer:Setting newly assigned partitions {TopicPartition(topic='test', partition=0)} for group test
+INFO:root:sid: "req_001"
+timestamp: 154353452
+uid: "uid_00001"
+channel_id: "1"
+request {
+  request_id: "req_id_00001"
+  app {
+    app_id: "app_id_001"
+    app_version {
+      major: 4
+      minor: 2
+    }
+    app_package: "com.sigmob.animal"
+    name: "\345\274\200\345\277\203\346\266\210\346\266\210\344\271\220"
+  }
+  device {
+    device_type: 1
+    os_type: 1
+    os_version {
+      major: 9
+      minor: 2
+      micro: 1
+    }
+    vendor: "\345\260\217\347\261\263\347\247\221\346\212\200"
+    model: "MI note 2"
+    did {
+      idfa: "idfa_2323465"
+      udid: "udid_adgasdf"
+    }
+  }
+  network {
+    ipv4: "61.49.51.159"
+    connection_type: 100
+  }
+  slots {
+    adslot_id: "slot_id_001"
+    adslot_type: 1
+    bidfloor: 100
+    vid: "vid_3s5h2s3451a23asdf23ad"
+  }
+}
+
+INFO:kafka.coordinator:Stopping heartbeat thread
+2018-03-02 15:57:39,143 - kafka.client - INFO - Bootstrapping cluster metadata from [('10.130.138.164', 9092, <AddressFamily.AF_INET: 2>)]
+2018-03-02 15:57:39,146 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap host=10.130.138.164/10.130.138.164 port=9092>: connecting to 10.130.138.164:9092
+2018-03-02 15:57:39,158 - kafka.client - INFO - Bootstrap succeeded: found 3 brokers and 27 topics.
+2018-03-02 15:57:39,158 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap host=10.130.138.164/10.130.138.164 port=9092>: Closing connection. 
+2018-03-02 15:57:39,159 - kafka.conn - INFO - <BrokerConnection node_id=0 host=10.130.138.164/10.130.138.164 port=9092>: connecting to 10.130.138.164:9092
+2018-03-02 15:57:40,332 - kafka.conn - INFO - Broker version identifed as 1.0.0
+2018-03-02 15:57:40,333 - kafka.conn - INFO - Set configuration api_version=(1, 0, 0) to skip auto check_version requests on startup
+2018-03-02 15:57:40,334 - kafka.consumer.subscription_state - INFO - Updating subscribed topics to: ('test',)
+2018-03-02 15:57:40,336 - kafka.conn - INFO - <BrokerConnection node_id=1 host=10.130.138.164/10.130.138.164 port=9093>: connecting to 10.130.138.164:9093
+2018-03-02 15:57:40,340 - kafka.cluster - INFO - Group coordinator for test is BrokerMetadata(nodeId=0, host='10.130.138.164', port=9092, rack=None)
+2018-03-02 15:57:40,340 - kafka.coordinator - INFO - Discovered coordinator 0 for group test
+2018-03-02 15:57:40,341 - kafka.coordinator - INFO - Starting new heartbeat thread
+2018-03-02 15:57:40,341 - kafka.coordinator.consumer - INFO - Revoking previously assigned partitions set() for group test
+2018-03-02 15:57:40,341 - kafka.coordinator - INFO - (Re-)joining group test
+2018-03-02 15:57:40,346 - kafka.coordinator - INFO - Elected group leader -- performing partition assignments using range
+2018-03-02 15:57:40,352 - kafka.coordinator - INFO - Successfully joined group test with generation 8
+2018-03-02 15:57:40,353 - kafka.consumer.subscription_state - INFO - Updated partition assignment: [TopicPartition(topic='test', partition=0)]
+2018-03-02 15:57:40,353 - kafka.coordinator.consumer - INFO - Setting newly assigned partitions {TopicPartition(topic='test', partition=0)} for group test
+2018-03-02 15:58:16,637 - root - INFO - sid: "req_001"
+timestamp: 154353452
+uid: "uid_00001"
+channel_id: "1"
+request {
+  request_id: "req_id_00001"
+  app {
+    app_id: "app_id_001"
+    app_version {
+      major: 4
+      minor: 2
+    }
+    app_package: "com.sigmob.animal"
+    name: "\345\274\200\345\277\203\346\266\210\346\266\210\344\271\220"
+  }
+  device {
+    device_type: 1
+    os_type: 1
+    os_version {
+      major: 9
+      minor: 2
+      micro: 1
+    }
+    vendor: "\345\260\217\347\261\263\347\247\221\346\212\200"
+    model: "MI note 2"
+    did {
+      idfa: "idfa_2323465"
+      udid: "udid_adgasdf"
+    }
+  }
+  network {
+    ipv4: "61.49.51.159"
+    connection_type: 100
+  }
+  slots {
+    adslot_id: "slot_id_001"
+    adslot_type: 1
+    bidfloor: 100
+    vid: "vid_3s5h2s3451a23asdf23ad"
+  }
+}
+
+2018-03-02 15:58:56,353 - kafka.coordinator - INFO - Stopping heartbeat thread
