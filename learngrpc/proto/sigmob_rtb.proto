@@ -1,0 +1,117 @@
+/**
+@description sigmob程序化交易竞价协议
+@author jie.pu
+@版本: 1.0.0
+**/
+
+syntax = "proto3";
+
+package sigmob;
+option java_package = "com.entry.sigmob";
+option go_package = "sigmob.com/common/entry/sigmob";
+
+//内部竞价请求
+message BidRequest {
+    string request_id = 1;      //内部生成；请求唯一标识，[a-zA-Z0-9]{32}
+    Version api_version = 2;    //选填, API版本
+    App app = 3;                //必填！应用信息
+    Device device = 4;          //必填！设备信息
+    Network network = 5;        // 必填！网络环境信息
+    repeated AdSlot slots = 6;  // 必填！广告位信息。 目前只支持单广告位
+}
+
+message Version {
+    uint32 major = 1;  // 主版本号, 必填！
+    uint32 minor = 2;  // 副版本号, 必填！
+    uint32 micro = 3;  // 子版本号, 必填！
+}
+
+message App {
+    string app_id = 1;          // 应用ID
+    Version app_version = 2;    // 必填！应用版本
+    string app_package = 3;     // 必填！应用包名
+    string name = 5;            //app名称
+}
+
+message Geo {
+    uint64 city_code = 5; //地域编码
+};
+
+message Device {
+    uint32 device_type = 1;     //设备类型。1=手机；2=平板
+    uint32 os_type = 2;         //操作系统类型. 1=IOS；2=Android
+    Version os_version = 3;     // 必填！操作系统版本
+    string vendor = 4;          // 必填！设备厂商名称，中文需要UTF-8编码
+    string model = 5;           // 必填！设备型号，中文需要UTF-8编码
+    DeviceId did = 6;           // 必填！唯一设备标识，必需按要求填写
+    Size screen_size = 7;       // 必填！设备屏幕宽高
+    Geo geo = 8;
+}
+
+// 唯一用户标识，优先使用明文，必需按要求填写，具体填写指导详见接口说明文档
+message DeviceId {
+    string idfa = 1;        // 必填！iOS设备的IDFA，格式要求[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}
+    string udid = 2;        // 内部生成
+}
+
+// 二维尺寸信息
+message Size {
+    uint32 width = 1;  // 宽度, 必填！
+    uint32 height= 2;  // 高度, 必填！
+}
+
+// 网络环境信息
+message Network {
+    string ipv4 = 1;                // 必填！用户设备的公网IPv4地址，格式要求：255.255.255.255
+    uint32 connection_type = 2;     // 必填！网络连接类型，用于判断网速。0=无法探测当前网络状态; 1=蜂窝数据接入，未知网络类型; 2=2G; 3=3G; 4=4G; 5=5G; 100=Wi-Fi网络接入; 101=以太网接入
+    uint32 operator_type = 3;       // 必填！移动运营商类型，用于运营商定向广告。0=未知的运营商；1=中国移动；2=中国联通；3=中国电信；
+}
+
+// 广告位信息
+message AdSlot {
+    string adslot_id = 1;               // 必填！广告位ID
+    Size adslot_size = 2;               // 必填！广告位尺寸。暂不填写，后续产品确定策略有再议
+    repeated uint32 adslot_type = 3;    // 选填！支持的广告位类型（目前只支持一种）。 1=通用奖励视频
+    uint32 bidfloor = 4;                // 底价
+    string vid = 5;                     // 曝光ID，该广告位此次请求曝光唯一ID。可用requestid + adslot序列号生成
+}
+
+/****************************************************** Response *************************************************************************/
+//内部广告返回
+message BidResponse {
+    string request_id = 1;              //对应请的request_id(内部生成的)
+    repeated Ad ads = 2;                //广告信息
+    uint64 error_code = 3;              //请求出错时的错误码，用于问题排查
+    uint64 process_time_ms_dsp = 4;     //投放系统广告检索时长，ms
+    uint64 process_time_ms_ssp = 5;     //ssp聚合平台广告检索时长，ms
+}
+
+// 广告信息
+message Ad {
+    string adslot_id = 1;                   // 对应请求时填写的广告位ID
+    string vid = 2;                         //广告曝光id.
+    string cust_id = 3;                     //客户ID
+    string camp_id = 4;                     //推广计划ID
+    string crid = 5;                        //创意ID
+    repeated MaterialMeta materials = 6;    // 物料元数据组(素材)，目前只有一个
+    repeated Tracking ad_tracking = 7;      // 广告监控信息
+    uint32 bid_price = 8;                   // 最高竞价，单位cpm分
+}
+
+// 广告物料元数据信息
+message MaterialMeta {
+    uint32 creative_type = 1;               // 创意类型：1=通用奖励视频广告，一般由一段视频 + Endcard
+    uint32 interaction_type = 2;            // 广告交互类型。1=使用浏览器打开；2=下载应用
+    string landing_page = 3;                // 广告目标地址
+    string video_url = 4;                   // 视频物料地址
+    uint32 video_duration = 5;              // 视频物料时长
+    Size   video_size = 6;            		// 视频尺寸
+    bytes html_snippet = 7;                 // HTML片段，中文需要UTF-8编码. 激励视频广告时,存放Endcard的H5代码.
+    string endcard_url = 8;                // Endcard地址
+}
+
+// 广告效果跟踪信息
+message Tracking {
+    string tracking_event_type = 1;  // track事件类型。事件类型见字典
+    repeated string tracking_url = 2;       // track事件URL
+}

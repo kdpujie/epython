@@ -1,0 +1,51 @@
+/**
+@description 内部数据对象集合，用于ssp和投放系统接口，和request、response日志打印。
+@author jie.pu
+@版本: 1.0.0
+**/
+syntax = "proto3";
+
+import "sigmob_rtb.proto";
+import "sigmob_ad_operation.proto";
+
+option java_package = "com.entry";
+option go_package = "entry";
+
+//广告竞价服务接口
+service Rtb {
+    //获取竞价广告
+    rpc GetMobileAd (SearchLog) returns (SearchLog) {
+
+    }
+}
+
+message SearchLog {
+    string sid = 1;                     // 唯一标识一次竞价请求，内部生成。建议和sigmob.BidRequest.request_id一致
+    int64  timestamp = 2;               // 接收到请求的服务器unix时间戳
+    uint32 time_interval = 3; 	        // 请求时段
+    string uid = 4;                     // 用户内部UID，因为现在无人群库，可暂使用idfa的md5值
+    string channel_id = 5;              // 必填！流量来源渠道编码：1=自有ssp流量
+    sigmob.BidRequest request = 6;      // sigmob sdk请求发起的pb格式的request对象
+    sigmob.BidResponse response = 7;    // 投放系统和sdk约定的pb格式的response对象
+    uint64 error_code = 8;              // 错误码. 和sigmob.response中的error_code一致； 内部使用
+    uint64 process_time_ms = 9;         // 接收请求到返回广告的时间间隔。
+    IndexRequest index_request = 10;    // 检索请求
+    IndexResponse index_response = 11;  // 检索返回
+    string server_ip = 12;              // 请求接收server的ipv4地址
+}
+
+// 检索请求
+message IndexRequest {
+    repeated IndexTermGroup groups = 1; //索引分组，多个分组之间为逻辑与(and)关系
+}
+
+// 检索返回
+message IndexResponse {
+    repeated string lookup_ad_list = 1; //检索广告列表
+    repeated operation.Campaign valid_ads = 2; //有效广告
+}
+
+// 索引项分组
+message IndexTermGroup {
+    repeated string index_term = 1; // 索引项，多个索引项之间为逻辑或(or)的关系
+}

@@ -1,0 +1,83 @@
+/**
+@description 广告同步接口定义
+@author jie.pu
+@date 2018-01-16
+@版本: 1.0.0
+**/
+
+syntax = "proto3";
+
+package operation;
+option java_package = "com.entry";
+option go_package = "sigmob.com/common/entry/operation";
+
+//广告竞价服务接口
+service AdOperation {
+    //广告上线
+    rpc OnlineCampaign (Campaign) returns (Mesg) {}
+    //广告下线(暂停)
+    rpc OfflineCampaign (Campaign) returns (Mesg) {}
+    //广告信息更新通知(新增、修改)
+    rpc UpdateCampaignNotice (Campaign) returns (Mesg) {}
+    //创意信息更新通知(新增、修改)
+    rpc UpdateCreativeNotice (Creative) returns (Mesg) {}
+    rpc Ping (Mesg) returns (Mesg) {}
+}
+
+//周期
+message AdPeriod {
+    int64 start_time = 1;
+    int64 end_time = 2;
+}
+
+//广告计划(活动)
+message Campaign {
+    uint64 id = 1; //广告计划local id
+    string campaign_code = 2; //广告计划业务ID
+    string name = 3; // 广告计划名称
+    string gid = 4; //用户组ID
+    uint32 interaction_type = 5;  // 广告交互类型。1=使用浏览器打开；2=下载应用
+    string target_url = 6;
+    uint32 track_active_type = 7; //第三方激活监测平台。4：热云
+    string track_active_url = 8; //第三方激活监测平台的上报地址
+    uint32 adver_bid_type = 9; // 1:cpm; 2:cpc; 3:cpa
+    uint32 adver_bid_price = 10; //广告主出价价格。单位：cpm分
+    uint32 bid_speed = 11; // 1: 匀速 2：快速
+    uint32 day_budget = 12; //日预算。单位：分
+    string time_interval = 13; //投放时段
+    repeated AdPeriod period = 14; // 投放周期
+    map<uint64,Creative> creatives = 15; //包含的创意信息
+    uint32 state = 16; // 广告状态。0:关闭 1:开启 2:审核 3:预算到量
+    uint32 ad_type = 17; //广告类型。1 奖励视频
+}
+
+//广告创意
+message Creative {
+    uint64 id = 1;              // 创意local id
+    uint64 parent_id =2;        // 所属的计划ID
+    string creative_code=3;     // 创意业务编码
+    uint32 creative_type = 4;   // 创意类型：1=通用奖励视频广告，一般由一段视频 + Endcard
+    string video_url = 5;       // 视频物料地址
+    string endcard_url = 6;     // Endcard地址
+    uint32 state = 7;           // 状态开关。0：关闭 1：开启
+}
+
+//接口返回 定义
+message Mesg {
+    bool success = 1; //返回成功标识
+    string code = 2;  //返回状态码(暂无)
+    string desc = 3;  //错误详细信息
+}
+
+//广告变更信息。作为发布订阅的数据格式
+message AdUpdate {
+    AdIndexs ad_index = 1; // 索引信息
+    Creative creative = 2; // 创意信息
+}
+
+// 索引信息
+message AdIndexs {
+    uint64 ad_local_id = 1;              // campaign系统id
+    repeated string old_index_term = 2;  // 更新之前，广告包含的索引项
+    repeated string new_index_term = 3;  // 更新后，广告包含的索引项
+}
