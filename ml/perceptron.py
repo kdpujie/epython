@@ -6,6 +6,7 @@ Created on 2019年3月2日
 '''
 
 import numpy as np
+import sys
 
 
 # 折页损失函数
@@ -32,20 +33,30 @@ class Perceptron(object):
 
     def fit(self, x=[], y=[]):
         x = np.mat(x)
-        self.w = np.zeros((1, len(x.T)), int)                  # 矩阵计算为行*列，所以w的列数 = x的行数
         self._plain_sgd(x, y)
+        return self
 
     def _plain_sgd(self, x, y):
+        w = np.zeros((1, len(x.T)), float)                          # 矩阵计算为行*列，所以w的列数 = x的行数
+        b = self.intercept
+        min_sum_loss = sys.maxsize
         for epoch in range(self.max_iter):
-            update = 0
+            sum_loss = 0
             for i in range(len(x)):
-                p = np.dot(x[i], self.w.T) + self.intercept     # 计算w*x +b
-                update = self.loss.loss(p, y[i])                # 误分类点的损失非0
+                p = np.dot(x[i], w.T) + b                             # 计算w*x +b
+                update = self.loss.loss(p, y[i])                    # 误分类点的损失非0
                 if update != 0:
-                    self.w += self.eta * y[i] * x[i]            # 调整w，使超平面向i点移动
-                    self.intercept += self.eta * y[i]           # 调整b，使超平面向i点移动
-            print("--%d Epoch, w=%s, intercept=%d" % (epoch + 1, self.w, self.intercept))
-            if update == 0:                                     # 无误分类点，则退出迭代
+                    sum_loss += 1
+                if sum_loss > 0:
+                    w += self.eta * y[i] * x[i]                     # 调整w，使超平面向i点移动
+                    b += self.eta * y[i]                            # 调整b，使超平面向i点移动
+            print("--%d Epoch, sum_loss=%d, min=%d, w=%s, opt_w=%s, b=%d, opt_intercept=%d" %
+                  (epoch + 1, sum_loss, min_sum_loss, w, self.w, b, self.intercept))
+            if sum_loss < min_sum_loss:                             # 记录迭代中最优的w、b
+                min_sum_loss = sum_loss
+                self.w = w + np.zeros((1, len(w)), float)
+                self.intercept = b
+            if sum_loss == 0:                                       # 无误分类点，则退出迭代
                 break
 
     def test(self, test_x, test_y):
@@ -54,6 +65,7 @@ class Perceptron(object):
         if size < 0:
             pass
         for i in range(len(test_x)):
+            print(test_x[i], self.w.T)
             p = np.dot(test_x[i], self.w.T) + self.intercept
             r = self.loss.loss(p, test_y[i])
             if r != 0:
