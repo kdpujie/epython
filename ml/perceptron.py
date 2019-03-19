@@ -47,7 +47,6 @@ class Perceptron(object):
                 update = self.loss.loss(p, y[i])                    # 误分类点的损失非0
                 if update != 0:
                     sum_loss += 1
-                if sum_loss > 0:
                     w += self.eta * y[i] * x[i]                     # 调整w，使超平面向i点移动
                     b += self.eta * y[i]                            # 调整b，使超平面向i点移动
             print("--%d Epoch, sum_loss=%d, min=%d, w=%s, opt_w=%s, b=%d, opt_intercept=%d" %
