@@ -16,6 +16,62 @@ class Node:
         self.rchild = rchild
 
 
+class LargeHeap:
+
+    def __init__(self):
+        self.len = 0
+        self.heap_list = []   # here we use a list to store heap
+
+    def upward_adjust(self):
+        # adjust to a large heap, assuming that only the last element in heaplist is not legal
+        i = self.len - 1
+        while i > 0:
+            if self.heap_list[i][1] > self.heap_list[int((i - 1) / 2)][1]:
+                self.heap_list[i], self.heap_list[int((i - 1) / 2)] = self.heap_list[int((i - 1) / 2)], self.heap_list[i]
+                i = int((i - 1) / 2)
+            else:
+                break
+
+    def add(self, x, distance):
+        """
+        :param x: type Node, indicates a sample
+        :param distance: type double, use to indicate "large"
+        :return: None
+        """
+        # add a point and adjust it to a large heap
+        self.len += 1
+        self.heap_list.append([x, distance])   # append it to the end, and use upward_adjust()
+        self.upward_adjust()
+
+    def downward_adjust(self):
+        # adjust to a large heap, assuming that only the first element(top) in heap_list is not legal
+        i = 0
+        # attention to exchange with the large one of the children
+        while (2*i + 1) < self.len:
+            max_ind = 2*i +1
+            if 2*i+2 < self.len and self.heap_list[(2*i + 1)][1] < self.heap_list[(2*i + 2)][1]:
+                max_ind = 2*i + 2
+            if self.heap_list[i][1] < self.heap_list[max_ind][1]:
+                self.heap_list[i], self.heap_list[max_ind] = self.heap_list[max_ind], self.heap_list[i]
+                i = max_ind
+            else:
+                break
+
+    def pop(self):
+        # pop the top of the heap
+        if self.len == 1:
+            self.heap_list = []
+            self.len = 0
+            return self.heap_list[0]
+        # exchange for the last ele, and use downward_adjust()
+        large = self.heap_list[0]
+        self.heap_list[0] = self.heap_list[-1]
+        self.len -= 1
+        self.heap_list = self.heap_list[:self.len]
+        self.downward_adjust()
+        return large
+
+
 class KdTree(object):
     def __init__(self, dataset, label):
         self.kd_tree = None
@@ -105,5 +161,18 @@ def simple_test():
     print(sqrt(sum(square(a - b))))
 
 
+def test_large_heap():
+    a = Node(1, 1)
+    b = Node(2, 2)
+    c = Node(3, 3)
+    lh = LargeHeap()
+    lh.add(a, 4)
+    lh.add(b, 5)
+    lh.add(c, 6)
+    n = lh.pop()
+    print(n[0].data, n[0].label)
+
+
 if __name__ == '__main__':
-    simple_test()
+    # simple_test()
+    test_large_heap()
