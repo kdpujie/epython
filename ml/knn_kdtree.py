@@ -1,9 +1,10 @@
 #encoding=utf-8
-"""感知机算法的原始形式简单实现
+"""kd_tree实现
 Created on 2019年3月13日
 @author: jie.pu"""
 
-from numpy import *
+# from numpy import *
+import numpy as np
 
 
 class Node:
@@ -17,7 +18,7 @@ class Node:
 
 
 class LargeHeap:
-
+    """最大堆"""
     def __init__(self):
         self.len = 0
         self.heap_list = []   # here we use a list to store heap
@@ -88,7 +89,7 @@ class KdTree(object):
         :return: 返回当前样本组成的tree node
         """
         if len(dataset) > 0:
-            m, self.feature_number = shape(dataset)
+            m, self.feature_number = np.shape(dataset)
             axis = depth % self.feature_number
             mid = int(m / 2)
             dataset_copy = sorted(dataset, key=lambda x:x[axis])
@@ -110,55 +111,57 @@ class KdTree(object):
     def pre_order(self):
         self._pre_order(self.kd_tree)
 
-    def search(self, x, count = 1):
-        nearest = []
-        for i in range(count):
-            nearest.append([-1, None])
-        # 初始化n个点，nearest是按照距离递减的方式
-        self.nearest = np.array(nearest)
+    @staticmethod
+    def distance(a, b):
+        """欧氏距离"""
+        return np.sqrt(np.sum(np.square(np.subtract(a, b))))
 
+    def k_nearest_neighbor(self, k, target, k_nearest_heap=LargeHeap()):
+        """搜索K个最近邻点"""
         def recurve(node):
             if node is not None:
                 # 计算当前点的维度axis
-                axis = node.depth % self.n
+                axis = node.depth % self.feature_number
                 # 计算测试点和当前点在axis维度上的差
-                daxis = x[axis] - node.data[axis]
+                daxis = target[axis] - node.data[axis]
                 # 如果小于进左子树，大于进右子树
                 if daxis < 0:
                     recurve(node.lchild)
                 else:
                     recurve(node.rchild)
-                # 计算预测点x到当前点的距离dist
-                dist = np.sqrt(np.sum(np.square(x - node.data)))
-                for i, d in enumerate(self.nearest):
-                    # 如果有比现在最近的n个点更近的点，更新最近的点
-                    if d[0] < 0 or dist < d[0]:
-                        # 插入第i个位置的点
-                        self.nearest = np.insert(self.nearest, i, [dist, node], axis=0)
-                        # 删除最后一个多出来的点
-                        self.nearest = self.nearest[:-1]
-                        break
-                # 统计距离为-1的个数n
-                n = list(self.nearest[:, 0]).count(-1)
+                # 计算预测点target到当前点的距离dist
+                dist = self.distance(target, node.data)
+                if k_nearest_heap.len < k:
+                    k_nearest_heap.add(node, dist)
+                elif dist < k_nearest_heap.heap_list[0][1]:
+                    k_nearest_heap.pop()
+                    k_nearest_heap.add(node, dist)
                 '''
-                self.nearest[-n-1, 0]是当前nearest中已经有的最近点中，距离最大的点。
-                self.nearest[-n-1, 0] > abs(daxis)代表以x为圆心，self.nearest[-n-1, 0]为半径的圆与axis
-                相交，说明在左右子树里面有比self.nearest[-n-1, 0]更近的点
+                k_nearest_heap.heap_list[0]是当前nearest中已经有的最近点中，距离最大的点。
+                k_nearest_heap.heap_list[0][1] > abs(daxis)是代表以target为圆心，k_nearest_heap.heap_list[0][1]为半径的圆与axis
+                相交，说明在左右子树里面有比k_nearest_heap.heap_list[0]更近的点
                 '''
-                if self.nearest[-n - 1, 0] > abs(daxis):
+                if k_nearest_heap.heap_list[0][1] > abs(daxis):
                     if daxis < 0:
                         recurve(node.rchild)
                     else:
                         recurve(node.lchild)
+
+        recurve(self.kd_tree)
+        return k_nearest_heap.heap_list
 
 
 def simple_test():
     data = [[2, 3], [5, 4], [9, 6], [4, 7], [8, 1], [7, 2]]
     label = [0, 0, 0, 1, 1, 1]
     tree = KdTree(data, label)
-    a = array([3,3])
-    b = array([1,1])
-    print(sqrt(sum(square(a - b))))
+    k_list = tree.k_nearest_neighbor(2, [3, 4.5])
+    for el in k_list:
+        print(el[0].data, el[1])
+    # a = array([3,3])
+    # b = array([1,1])
+    # print(sqrt(sum(square(a - b))))
+    # print(square(a - b))
 
 
 def test_large_heap():
@@ -174,5 +177,5 @@ def test_large_heap():
 
 
 if __name__ == '__main__':
-    # simple_test()
-    test_large_heap()
+    simple_test()
+    #test_large_heap()
