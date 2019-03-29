@@ -3,8 +3,8 @@
 Created on 2019年3月13日
 @author: jie.pu"""
 
-# from numpy import *
 import numpy as np
+import pandas as pd
 
 
 class Node:
@@ -89,10 +89,15 @@ class KdTree(object):
         :return: 返回当前样本组成的tree node
         """
         if len(dataset) > 0:
-            m, self.feature_number = np.shape(dataset)
+            # m, n = dataset.shape
+            m, n = np.shape(dataset)
+            self.feature_number = n
             axis = depth % self.feature_number
             mid = int(m / 2)
+            # key = dataset.dtypes.keys()[axis]
+            # dataset.sort_values(by=key, inplace=True)
             dataset_copy = sorted(dataset, key=lambda x:x[axis])
+            # dataset_copy = dataset_copy[:self.feature_number]
             node = Node(dataset_copy[mid], label[mid], depth)
             if depth == 0:
                 self.kd_tree = node
@@ -152,12 +157,19 @@ class KdTree(object):
 
 
 def simple_test():
-    data = [[2, 3], [5, 4], [9, 6], [4, 7], [8, 1], [7, 2]]
+    data = [[2, 3, 0], [5, 4, 0], [9, 6, 0], [4, 7, 1], [8, 1, 1], [7, 2, 1]]
     label = [0, 0, 0, 1, 1, 1]
-    tree = KdTree(data, label)
-    k_list = tree.k_nearest_neighbor(2, [3, 4.5])
-    for el in k_list:
-        print(el[0].data, el[1])
+    dataset = pd.DataFrame(data, columns=['x1', 'x2', 'y'])
+    print(dataset.dtypes.keys()[0])
+    dataset.sort_values(by='x1', inplace=True)
+    print(dataset.shape)
+    x = dataset[['x1','x2']]
+    y = dataset['y']
+    print(x.values)
+    # tree = KdTree(data)
+    # k_list = tree.k_nearest_neighbor(2, [3, 4.5])
+    # for el in k_list:
+        # print(el[0].data, el[1])
     # a = array([3,3])
     # b = array([1,1])
     # print(sqrt(sum(square(a - b))))
