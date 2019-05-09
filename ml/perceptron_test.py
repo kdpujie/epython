@@ -6,8 +6,11 @@ Created on 2019年3月2日
 '''
 
 import pandas
+import datetime
 from ml import perceptron
 from pandas import DataFrame
+from ml.perceptron_v2 import PerceptronV2
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 
@@ -41,10 +44,18 @@ def read_data(file):
 
 def train(train_file):
     x, y, test_x, test_y = read_data(train_file)
-    clf = perceptron.Perceptron(1, 100)
+    # clf = perceptron.Perceptron(1, 100)
+    clf = PerceptronV2()
+    start0 = datetime.datetime.now()
     clf.fit(x, y)
+    end = datetime.datetime.now()
+    print("fit耗时：%d s" % (end - start0).seconds)
     clf.test(test_x, test_y)
+    print("test耗时：%d s" % (datetime.datetime.now() - end).seconds)
 
 
 if __name__ == '__main__':
-    train("/Users/pujie/workspace/python/exercise/ml/data/perceptron_train.csv")
+     train("/Users/pujie/workspace/python/exercise/ml/data/perceptron_train.csv")
+    # w = np.zeros((1, 3), int)
+    # print(w)
+    # print(len(w.T))
