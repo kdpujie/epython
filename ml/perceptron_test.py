@@ -25,7 +25,7 @@ def read_data(file):
         y0 = line[0]
         if y0 < 1 :
             y0 = -1
-        if index > 2999:
+        if index > 1999:
             y.append(y0)
             x.append(x0)
         else:

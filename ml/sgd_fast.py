@@ -24,13 +24,13 @@ class Hinge(object):
     def _dloss(self, p, y):
         z = p * y
         if z <= self.threshold:
-            return y
+            return -y
         return 0.0
 
 
 def plain_sgd(weights, intercept, loss, x, y, max_iter=100, eta0=1, n_iter_no_change=5):
     update = 0.0
-    best_loss = 0.0
+    best_loss = np.inf
     no_improvement_count = 0
     for epoch in range(max_iter):
         sum_loss = 0
@@ -38,7 +38,7 @@ def plain_sgd(weights, intercept, loss, x, y, max_iter=100, eta0=1, n_iter_no_ch
             p = np.dot(x[i], weights.T) + intercept   # 计算w*x +b
             sum_loss += loss.loss(p, y[i])          # 误分类点的损失非0
             dloss = loss._dloss(p, y[i])
-            update = eta0 * dloss
+            update = -eta0 * dloss
             if update != 0:
                 weights += update * x[i]            # 调整w，使超平面向i点移动
                 intercept += update                 # 调整b，使超平面向i点移动
