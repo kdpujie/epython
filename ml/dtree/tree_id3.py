@@ -1,4 +1,3 @@
-#encoding=utf-8
 """
 决策树的ID3算法
 Created on 2019年6月06日
