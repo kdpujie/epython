@@ -17,3 +17,5 @@
  7. [k最近邻算法(kNN)](https://blog.csdn.net/liqiutuoyuan/article/details/77073689)
  8. [kdtree&knn](https://blog.csdn.net/u014265088/article/details/53579539)
  9. [#knn#数据结构——堆（Heap）大根堆、小根堆](https://www.cnblogs.com/wangchaowei/p/8288216.html)
+ 10.[机器学习实战（三）——决策树](https://blog.csdn.net/jiaoyangwm/article/details/79525237)
+ 11.[决策树之ID3算法](https://www.cnblogs.com/kuaizifeng/p/9110157.html)

@@ -1,7 +1,10 @@
 """
 决策树的ID3算法
 Created on 2019年6月06日
-@author: jie.pu
+算法：
+输入：训练数据集D和特征A
+输出：特征A对训练数据集D的信息增益g(D, A)
+1.
 """
 import numpy as np
 import pandas as pd
