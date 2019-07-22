@@ -19,12 +19,22 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
 class ActionService(AutoAuctionServicer):
-    def auction(self, request, context):
-        print(request)
-        res = AutoResponse()
-        res.request_id = request.request_id
-        res.err_code = '200000'
-        return res
+    def auction(self, request_iterator, context):
+        for req in request_iterator:
+            print(f'req:\n{req}')
+            time.sleep(1)
+            res = AutoResponse()
+            res.request_id = req.request_id
+            res.err_code = '0'
+            if req.req_type == '1':
+                res.youxin.is_auction = True
+                res.youxin.step = 500
+                res.youxin.after_total_price = req.youxin.current_total_price + 0.05
+                yield res
+            else:
+                res.youxin.is_auction = False
+            # print(f'res: \n{res}')
+            yield res
 
 
 def start_server():

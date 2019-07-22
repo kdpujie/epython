@@ -14,7 +14,7 @@ class AutoAuctionStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.auction = channel.unary_unary(
+    self.auction = channel.stream_stream(
         '/AutoAuction/auction',
         request_serializer=auto__auction__abi__pb2.AutoRequest.SerializeToString,
         response_deserializer=auto__auction__abi__pb2.AutoResponse.FromString,
@@ -25,7 +25,7 @@ class AutoAuctionServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def auction(self, request, context):
+  def auction(self, request_iterator, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -35,7 +35,7 @@ class AutoAuctionServicer(object):
 
 def add_AutoAuctionServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'auction': grpc.unary_unary_rpc_method_handler(
+      'auction': grpc.stream_stream_rpc_method_handler(
           servicer.auction,
           request_deserializer=auto__auction__abi__pb2.AutoRequest.FromString,
           response_serializer=auto__auction__abi__pb2.AutoResponse.SerializeToString,
