@@ -11,3 +11,6 @@
 3.file
 --
   IO编程
+  
+# 参考
+1. [Python和Signal](https://www.jianshu.com/p/c8edab99173d)

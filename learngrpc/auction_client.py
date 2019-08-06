@@ -12,8 +12,8 @@ import grpc
 from learngrpc.proto.auto_auction_rpc_pb2_grpc import AutoAuctionStub
 from learngrpc.proto.auto_auction_abi_pb2 import AutoRequest
 
-_HOST = 'localhost'
-_PORT = '6688'
+_HOST = '192.168.165.134'
+_PORT = '6677'
 
 
 def generate_request(req_pre):
@@ -25,14 +25,26 @@ def generate_request(req_pre):
         req.timestamp = int(time.mktime(now))
         if i == number - 1:
             req.req_type = '2'
+            req.youxin.max_total_price = 5.88
+            req.youxin.current_total_price = 5.68
+            req.youxin.deal_status = '未成交'
         else:
             req.req_type = '1'
         req.youxin.current_total_price = 5.08
+        req.youxin.vehicle_id = 'B03137049'
+        req.youxin.current_quote_price = 4.98
+        req.youxin.steps.append(200)
+        req.youxin.steps.append(500)
+        req.youxin.is_first_price = False
+        req.youxin.is_arrive_reserve_price = 0
         # print(f'request: {req}')
         yield req
 
 
 def call_server(req_pre):
+    # requests = generate_request(req_pre)
+    # for req in requests:
+    #     print(req.youxin.steps[0])
     conn = grpc.insecure_channel(_HOST + ':' + _PORT)
     client = AutoAuctionStub(channel=conn)
     responses = client.auction(generate_request(req_pre))
@@ -51,6 +63,6 @@ def multi_call():
 
 
 if __name__ == '__main__':
-    multi_call()
+    call_server('thread')
     # for i in generate_request():
     #     print(i)
